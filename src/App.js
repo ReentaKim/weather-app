@@ -1,5 +1,8 @@
 import './App.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import {useEffect} from "react";
+import WeatherBox from "./component/WeatherBox";
+import WeatherButton from "./component/WeatherButton";
 
 // 1. 앱이 실행되자마자 현재위치 기반의 날씨가 보인다.
 // 2. 날씨정보에는 도시, 섭씨, 화씨, 날씨상태
@@ -36,7 +39,10 @@ function App() {
 
     return (
         <div>
-            HI!
+            <div className={'container'}>
+                <WeatherBox/>
+                <WeatherButton/>
+            </div>
         </div>
     );
 }
