@@ -16,6 +16,7 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 function App() {
 
     const [weather, setWeather] = useState(null);
+    const cities = ['paris', 'new york', 'tokyo', 'seoul'];
 
     const getCurrentLocation = () => {
         navigator.geolocation.getCurrentPosition(position => {
@@ -40,8 +41,8 @@ function App() {
     return (
         <div>
             <div className={'container'}>
-                <WeatherBox weather={weather} />
-                <WeatherButton/>
+                <WeatherBox weather={weather}/>
+                <WeatherButton cities={cities}/>
             </div>
         </div>
     );
