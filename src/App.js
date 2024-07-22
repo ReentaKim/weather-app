@@ -14,23 +14,21 @@ function App() {
     const getCurrentLocation = () => {
         console.log('getCurrentLocation');
         navigator.geolocation.getCurrentPosition(position => {
-           let lat = position.coords.latitude;
-           let lon = position.coords.longitude;
+            let lat = position.coords.latitude;
+            let lon = position.coords.longitude;
             console.log(lat, lon);
-            // fetchWeather(lat,lon);
+            getWeatherByCurrentLocation(lat, lon);
         });
     }
 
-    // const fetchWeather = async (lat, lon) => {
-    //     console.log(lat,lon);
-    //     try {
-    //         const response = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`);
-    //         const data = await response.json();
-    //         console.log(data);
-    //     } catch (error) {
-    //         console.error("Error fetching weather:", error);
-    //     }
-    // };
+    const getWeatherByCurrentLocation = async (lat, lon) => {
+        console.log(API_KEY)
+        let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`;
+        let response = await fetch(url);
+        const data = await response.json();
+        console.log(data);
+
+    };
 
     useEffect(() => {
         getCurrentLocation();
