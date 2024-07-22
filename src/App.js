@@ -16,6 +16,7 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 function App() {
 
     const [weather, setWeather] = useState(null);
+    const [city, setCity] = useState('');
     const cities = ['paris', 'new york', 'tokyo', 'seoul'];
 
     const getCurrentLocation = () => {
@@ -34,15 +35,26 @@ function App() {
 
     };
 
+    const getWeatherByCity = async () => {
+        let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+        let response = await fetch(url);
+        const data = await response.json();
+        setWeather(data);
+    }
+
     useEffect(() => {
-        getCurrentLocation();
-    }, []);
+        if (city === '') {
+            getCurrentLocation();
+        } else {
+            getWeatherByCity();
+        }
+    }, [city]);
 
     return (
         <div>
             <div className={'container'}>
                 <WeatherBox weather={weather}/>
-                <WeatherButton cities={cities}/>
+                <WeatherButton cities={cities} setCity={setCity}/>
             </div>
         </div>
     );
