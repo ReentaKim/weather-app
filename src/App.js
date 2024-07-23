@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import {useEffect, useState} from "react";
 import WeatherBox from "./component/WeatherBox";
 import WeatherButton from "./component/WeatherButton";
+import ClipLoader from "react-spinners/ClipLoader";
 
 // 1. 앱이 실행되자마자 현재위치 기반의 날씨가 보인다.
 // 2. 날씨정보에는 도시, 섭씨, 화씨, 날씨상태
@@ -16,6 +17,7 @@ const API_KEY = process.env.REACT_APP_API_KEY;
 function App() {
 
     const [weather, setWeather] = useState(null);
+    const [loading, setLoading] = useState(false);
     const [city, setCity] = useState('');
     const cities = ['paris', 'new york', 'tokyo', 'seoul'];
 
@@ -23,41 +25,56 @@ function App() {
         navigator.geolocation.getCurrentPosition(position => {
             let lat = position.coords.latitude;
             let lon = position.coords.longitude;
-            getWeatherByCurrentLocation(lat, lon);
+            getWeatherByCurrentLocation(lat, lon).catch((error) => {
+                console.error("Error fetching weather:", error);
+            });
         });
     }
 
     const getWeatherByCurrentLocation = async (lat, lon) => {
         let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`;
+        setLoading(true);
         let response = await fetch(url);
         const data = await response.json();
         setWeather(data);
-
+        setLoading(false);
     };
 
     const getWeatherByCity = async () => {
         let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${API_KEY}&units=metric`;
+        setLoading(true);
         let response = await fetch(url);
         const data = await response.json();
         setWeather(data);
+        setLoading(false);
     }
 
     useEffect(() => {
         if (city === '') {
             getCurrentLocation();
         } else {
-            getWeatherByCity();
+            getWeatherByCity().catch((error) => {
+                console.error("Error fetching weather:", error);
+            });
         }
     }, [city]);
 
-    return (
-        <div>
-            <div className={'container'}>
-                <WeatherBox weather={weather}/>
-                <WeatherButton cities={cities} setCity={setCity}/>
-            </div>
-        </div>
-    );
+    const handleCityChange = (city) => {
+        if (city === "current") {
+            setCity('');
+        } else {
+            setCity(city);
+        }
+    };
+
+    return (<div>
+            {loading ? <div className={'container'}>
+                <ClipLoader color='#f88c6b' loading={loading} size={150}/>
+            </div> : (<div className={'container'}>
+                    <WeatherBox weather={weather}/>
+                    <WeatherButton cities={cities} selectedCity={city} handleCityChange={handleCityChange}/>
+                </div>)}
+        </div>);
 }
 
 export default App;
